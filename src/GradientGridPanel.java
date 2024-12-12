@@ -6,7 +6,7 @@ public class GradientGridPanel extends JPanel
     private int[][] myGrid;
 
     final int GRID_SIZE = 16;
-    final int NUM_POSSIBLE_MODES = 5; // adjust this if you add to the list in the GradientGridFrame.
+    final int NUM_POSSIBLE_MODES = 4; // adjust this if you add to the list in the GradientGridFrame.
 
 
     private int mode; // which coloring scheme are we using?
@@ -81,9 +81,45 @@ public class GradientGridPanel extends JPanel
     {
         // suggested variable to track whether you have duplicate numbers in the grid. This defaults to all falses.
         boolean[] used = new boolean[GRID_SIZE * GRID_SIZE];
-
         //TODO: you write this method.
-        return false;
+        int[] rowDirections = {-1, 1, 0, 0, -1, 1, 1, -1};
+        int[] colDirections = {0, 0, 1, -1, 1, 1, -1, -1};
+        for(int r=0; r<GRID_SIZE; r++) {
+            for(int c=0; c<GRID_SIZE; c++){
+                if(myGrid[r][c] <= 255)
+                {
+                    if(used[myGrid[r][c]])
+                    {
+                        return false;
+                    }
+                    used[myGrid[r][c]] = true;
+
+                    if(myGrid[r][c] > 0)
+                    {
+                        boolean goodNeighbor = false;
+                        for (int i = 0; i < 8; i++)
+                        {
+                            int neighboringRow = r + rowDirections[i];
+                            int neighboringCol = c + colDirections[i];
+                            if(neighboringRow >= 0 && neighboringCol >= 0 && neighboringRow < GRID_SIZE && neighboringCol < GRID_SIZE)
+                            {
+                                if(myGrid[neighboringRow][neighboringCol] == myGrid[r][c]-1)
+                                {
+                                    goodNeighbor = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!goodNeighbor)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+
     }
 
     /**
@@ -104,10 +140,7 @@ public class GradientGridPanel extends JPanel
                 makeAnotherBadExample();
                 break;
             case 3:
-                // TODO write code for case 2, either here or in its own method.
-                break;
-            case 4:
-                // TODO write code for case 3, either here or in its own method.
+                makeCase2();
                 break;
             // you may add more cases, if you wish!
         }
@@ -127,6 +160,7 @@ public class GradientGridPanel extends JPanel
                 counter++;
             }
         }
+        confirmGridMeetsSpecifications();
     }
 
     /**
@@ -144,6 +178,7 @@ public class GradientGridPanel extends JPanel
                 counter++;
             }
         }
+        confirmGridMeetsSpecifications();
     }
 
     /**
@@ -168,6 +203,25 @@ public class GradientGridPanel extends JPanel
                 {194,195,198,199,202,203,206,207,210,211,214,215,218,219,222,223},
                 {253,252,249,248,245,244,241,240,237,236,233,232,229,228,225,224},
                 {255,254,251,250,247,246,243,242,239,238,235,234,231,230,227,226}};
+    }
+
+    private void makeCase2() {
+        int counter = 0;
+            for (int r=0; r <GRID_SIZE; r++)
+            {
+                if(r % 2 == 0){
+                    for (int c = 0; c < GRID_SIZE; c++) {
+                        myGrid[r][c] = counter++;
+                    }
+                }
+                else{
+                    for (int c = 0; c < GRID_SIZE; c++) {
+                        myGrid[r][GRID_SIZE-1-c] = counter++;
+
+                    }
+                }
+            }
+        confirmGridMeetsSpecifications();
     }
 
 
